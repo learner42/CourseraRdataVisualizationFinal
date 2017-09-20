@@ -1,0 +1,26 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# CourseraRdataVisualizationFinal
+
+The goal of CourseraRdataVisualizationFinal is to provide a geom to draw hurricanes. It is the final assignment for the Coursera Data Visualization in R.
+
+## Installation
+
+You can install CourseraRdataVisualizationFinal from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("learner42/CourseraRdataVisualizationFinal")
+```
