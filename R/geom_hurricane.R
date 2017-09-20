@@ -37,17 +37,20 @@ read_storm_data <- function(datadir = system.file("extdata", package="CourseraRd
 
 #' Compute the points representing the storm polygon
 #'
-#' @param x X coordinate of the center
-#' @param y Y coordinate of the center
+#' @param x0 X coordinate of the center
+#' @param y0 Y coordinate of the center
 #' @param ne Radius of the north-east quarter
 #' @param se Radius of the south-east quarter
 #' @param sw Radius of the south-west quarter
 #' @param nw Radius of the north-west quarter
 #' @param scale_radii Scale of the polygon, default to 1
-#' @return The resulting coordinates (data.frame with two column `x` and `y`
+#' @return The resulting coordinates (data.frame containing columns `x` and `y` for coordiantes)
 #' @export
-polygon_points <- function(x, y, ne, se, sw, nw, scale_radii = 1) {
-
+polygon_points <- function(x0, y0, ne, nw, se, sw, scale_radii = 1) {
+    angles <- 1:360
+    r = c(rep(ne, 90), rep(se, 90), rep(sw, 90), rep(nw, 90))
+    geosphere::destPoint(c(x0,y0), b = angles, d = r*1852*scale_radii) %>%
+        as.data.frame
 }
 
 GeomHurricance <- ggplot2::ggproto("GeomHurricane", ggplot2::Geom,
@@ -71,10 +74,8 @@ GeomHurricance <- ggplot2::ggproto("GeomHurricane", ggplot2::Geom,
 #' Draw the Katrina hurricane
 #'
 #' @param datadir Directory where the file is stored
-draw_katrina <- function(datadir) {
+draw_katrina <- function(datadir = system.file("extdata", package="CourseraRdataVisualizationFinal")) {
     storm_data <- read_storm_data(datadir)
     katrina <- storm_data %>%
         dplyr::filter(storm_id == 'Katrina-2005' & date == lubridate::ymd_hm("2005-08-29 12:00"))
-
-    print(katrina)
 }

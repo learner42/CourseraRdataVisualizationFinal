@@ -4,7 +4,7 @@
 \alias{polygon_points}
 \title{Compute the points representing the storm polygon}
 \usage{
-polygon_points(x, y, ne, se, sw, nw, scale_radii = 1)
+polygon_points(x, y, ne, nw, se, sw, scale_radii = 1)
 }
 \arguments{
 \item{x}{X coordinate of the center}
@@ -13,16 +13,16 @@ polygon_points(x, y, ne, se, sw, nw, scale_radii = 1)
 
 \item{ne}{Radius of the north-east quarter}
 
+\item{nw}{Radius of the north-west quarter}
+
 \item{se}{Radius of the south-east quarter}
 
 \item{sw}{Radius of the south-west quarter}
 
-\item{nw}{Radius of the north-west quarter}
-
 \item{scale_radii}{Scale of the polygon, default to 1}
 }
 \value{
-The resulting coordinates (data.frame with two column `x` and `y`
+The resulting coordinates (data.frame containing columns `x` and `y` for coordiantes)
 }
 \description{
 Compute the points representing the storm polygon

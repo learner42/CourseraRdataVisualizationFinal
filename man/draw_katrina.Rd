@@ -4,7 +4,8 @@
 \alias{draw_katrina}
 \title{Draw the Katrina hurricane}
 \usage{
-draw_katrina(datadir)
+draw_katrina(datadir = system.file("extdata", package =
+  "CourseraRdataVisualizationFinal"))
 }
 \arguments{
 \item{datadir}{Directory where the file is stored}
