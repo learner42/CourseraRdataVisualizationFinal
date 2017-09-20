@@ -1,0 +1,35 @@
+---
+title: "Geom hurricane tutorial"
+author: "Coursera Learner 42"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Geom hurricane tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This package provides a geom_hurricane method to be used in ggplot2 to draw hurricanes. It also provides a number of function to interact with hurricane data
+
+```{r, echo=FALSE}
+library(CourseraRdataVisualizationFinal)
+library(magrittr)
+options(width = 120)
+```
+
+## Read the hurricane data to a tidy data frame
+
+The whole dataset can be read with the `read_storm_data` method
+
+```{r message=FALSE}
+storm_data <- read_storm_data()
+print.data.frame(head(storm_data))
+```
+
+From there, we can extract the Katrina wind data at the desired observation:
+
+```{r message=FALSE}
+katrina <- storm_data %>%
+  dplyr::filter(storm_id == 'Katrina-2005' & date == lubridate::ymd_hm("2005-08-29 12:00"))
+print.data.frame(katrina)
+```

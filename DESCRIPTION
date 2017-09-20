@@ -1,9 +1,19 @@
 Package: CourseraRdataVisualizationFinal
-Title: What the Package Does (one line, title case)
+Title: Geom to draw hurricanes
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("Coursera", "Learner42", email = "coursera.learner42@gmail.com", role = c("aut", "cre"))
+Description: This package provide a geom to draw hurricanes.
 Depends: R (>= 3.2.3)
-License: What license is it under?
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Suggests: knitr,
+    rmarkdown,
+    testthat,
+    magrittr
+Imports: dplyr,
+    ggplot2,
+    readr,
+    tidyr
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1
