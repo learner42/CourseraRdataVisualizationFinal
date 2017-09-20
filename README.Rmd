@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/learner42/CourseraRdataVisualizationFinal.svg?branch=master)](https://travis-ci.org/learner42/CourseraRdataVisualizationFinal)
+
 ---
 output: github_document
 ---
