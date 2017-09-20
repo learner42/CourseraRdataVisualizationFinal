@@ -44,32 +44,45 @@ read_storm_data <- function(datadir = system.file("extdata", package="CourseraRd
 #' @param sw Radius of the south-west quarter
 #' @param nw Radius of the north-west quarter
 #' @param scale_radii Scale of the polygon, default to 1
-#' @return The resulting coordinates (data.frame containing columns `x` and `y` for coordiantes)
+#' @return The resulting coordinates (data.frame containing columns `lat` and `lon` for coordiantes)
 #' @export
 polygon_points <- function(x0, y0, ne, nw, se, sw, scale_radii = 1) {
     angles <- 1:360
     r = c(rep(ne, 90), rep(se, 90), rep(sw, 90), rep(nw, 90))
     geosphere::destPoint(c(x0,y0), b = angles, d = r*1852*scale_radii) %>%
-        as.data.frame
+        as.data.frame %>%
+        dplyr::select("lat", "lon")
 }
 
-GeomHurricance <- ggplot2::ggproto("GeomHurricane", ggplot2::Geom,
+#' Function to be use in ggplot2 to add a hurricane layer
+#' @export
+geom_hurricane <- function(mapping = NULL, data = NULL, stat = "identity",
+                           position = "identity", na.rm = FALSE,
+                           show.legend = NA, inherit.aes = TRUE, ...){
+    ggplot2::layer(
+        geom = GeomHurricane, mapping = mapping,
+        data = data, stat = stat, position = position,
+        show.legend = show.legend, inherit.aes = inherit.aes,
+        params = list(na.rm = na.rm,...)
+    )
+}
+
+
+#' Geom prototype to draw the hurricane
+GeomHurricane <- ggplot2::ggproto("GeomHurricane", ggplot2::Geom,
     required_aes = c("x", "y", "r_ne", "r_se", "r_nw", "r_sw", "fill", "color"),
     default_aes = ggplot2::aes(scale_radii = 1),
     draw_key = ggplot2::draw_key_polygon,
     draw_panel = function(data, panel_scales, coord) {
-        x <- data[1,]$x
-        y <- data[1,]$y
-        color <- data[1,]$color
-        fill <- data[1,]$fill
-        scale_radii <- data[1,]$scale_radii
-        r_ne <- data[1,]$r_ne
-        r_se <- data[1,]$r_se
-        r_sw <- data[1,]$r_sw
-        r_nw <- data[1,]$r_nw
-    }
-)
+        points <- polygon_points(data[1,]$x, data[1,]$y, data[1,]$ne, data[1,]$nw, data[1,]$se, data[1,]$sw)
+        colnames(points) <- c("x", "y")
+        coords <- coord$transform(points, panel_scales)
 
+        grid::polygonGrob(x = coords$x,
+                          y = coords$y,
+                          gp = grid::gpar(col = color, fill = fill))
+    }
+    )
 
 #' Draw the Katrina hurricane
 #'
@@ -78,4 +91,17 @@ draw_katrina <- function(datadir = system.file("extdata", package="CourseraRdata
     storm_data <- read_storm_data(datadir)
     katrina <- storm_data %>%
         dplyr::filter(storm_id == 'Katrina-2005' & date == lubridate::ymd_hm("2005-08-29 12:00"))
+    library(ggmap)
+
+    ## get_map("Louisiana", zoom = 6, maptype = "toner-background") %>%
+    ##     ggmap(extent = "device") +
+    ggplot() +
+        geom_hurricane(data = katrina,
+                       aes(x = longitude, y = latitude,
+                           r_ne = ne, r_se = se, r_nw = nw, r_sw = sw,
+                           fill = factor(wind_speed), color = factor(wind_speed))) +
+        scale_color_manual(name = "Wind speed (kts)",
+                           values = c("red", "orange", "yellow")) +
+        scale_fill_manual(name = "Wind speed (kts)",
+                          values = c("red", "orange", "yellow"))
 }

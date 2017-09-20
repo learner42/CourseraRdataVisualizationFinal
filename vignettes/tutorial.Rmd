@@ -38,6 +38,7 @@ print.data.frame(katrina)
 ## Helper to create the polygon
 ```{r}
 polygon <- polygon_points(-89.6,29.5,200,100,200,150)
+head(polygon)
 ggplot(polygon, aes(x = lat, y = lon)) +
   geom_polygon()
 ```
@@ -47,3 +48,6 @@ ggplot(polygon, aes(x = lat, y = lon)) +
 ## Example of hurricane illustration with `geom_hurricane`
 
 Draw the katrina observation on the screen:
+```{r, fig.show='hold'}
+# draw_katrina()
+```

@@ -10,7 +10,8 @@ LazyData: true
 Suggests: knitr,
     rmarkdown,
     testthat,
-    magrittr
+    magrittr,
+    ggmap
 Imports: dplyr,
     ggplot2,
     readr,
