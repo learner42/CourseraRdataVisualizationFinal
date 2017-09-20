@@ -32,7 +32,7 @@ From there, we can extract the Katrina wind data at the desired observation:
 ```{r message=FALSE}
 katrina <- storm_data %>%
   dplyr::filter(storm_id == 'Katrina-2005' & date == lubridate::ymd_hm("2005-08-29 12:00"))
-print.data.frame(katrina)
+print(katrina)
 ```
 
 ## Helper to create the polygon
