@@ -58,6 +58,7 @@ polygon_points <- function(x0, y0, ne, nw, se, sw, scale_radii = 1) {
 
 #' Function to be use in ggplot2 to add a hurricane layer
 #' @inheritParams ggplot2::geom_point
+#' @details The essential aes to pass are: x, y, r_ne, r_se, r_nw, r_sw. The wind_speed should be passed to color and fill parameters
 #' @export
 geom_hurricane <- function(mapping = NULL, data = NULL, stat = "identity",
                            position = "identity", na.rm = FALSE,
@@ -74,28 +75,39 @@ geom_hurricane <- function(mapping = NULL, data = NULL, stat = "identity",
 #' Geom prototype to draw the hurricane
 GeomHurricane <- ggplot2::ggproto("GeomHurricane", ggplot2::Geom,
     required_aes = c("x", "y", "r_ne", "r_se", "r_nw", "r_sw"),
-    default_aes = ggplot2::aes(color = "NA", fill = "grey20", size = 0.5, linetype = 1, alpha = 0.8, scale_radii = 1),
+    default_aes = ggplot2::aes(color = "NA", fill = "NA", size = 0.5, linetype = 1, alpha = 0.8, scale_radii = 1),
     draw_key = ggplot2::draw_key_polygon,
     draw_panel = function(data, panel_scales, coord) {
-        print(paste("Start draw panel", data[1,]$x, data[1,]$y, data[1,]$r_ne, data[1,]$r_nw, data[1,]$r_se, data[1,]$r_sw))
-        points <- polygon_points(data[1,]$x, data[1,]$y, data[1,]$r_ne, data[1,]$r_nw, data[1,]$r_se, data[1,]$r_sw) %>%
-            dplyr::rename(x = lon, y = lat) %>%
-            coord$transform(panel_scales)
+        tree <- grid::gTree()
+        for (i in 1:nrow(data)) {
+            ## print(paste(data[i,]$x, data[i,]$y, data[i,]$r_ne, data[i,]$r_nw, data[i,]$r_se, data[i,]$r_sw))
+            ## print(paste(data[i,]$colour, data[i,]$fill, data[i,]$alpha), data[i,]$group)
+            points <- polygon_points(data[i,]$x, data[i,]$y, data[i,]$r_ne, data[i,]$r_nw, data[i,]$r_se, data[i,]$r_sw) %>%
+                dplyr::rename(x = lon, y = lat) %>%
+                coord$transform(panel_scales)
 
-        grid::polygonGrob(x = points$x,
-                          y = points$y,
-                          gp = grid::gpar(col = data[1,]$color, fill = data[1,]$fill, alpha = data[1,]$alpha))
+            grob <- grid::polygonGrob(x = points$x,
+                                      y = points$y,
+                                      gp = grid::gpar(col = data[i,]$colour, fill = data[i,]$fill, alpha = data[i,]$alpha)
+                                      )
+            tree <- grid::addGrob(tree, grob)
+        }
+        tree
     }
     )
 
 #' Draw the Katrina hurricane
 #'
 #' @param datadir Directory where the file is stored
+#' @export
 draw_katrina <- function(datadir = system.file("extdata", package="CourseraRdataVisualizationFinal")) {
     storm_data <- read_storm_data(datadir)
     katrina <- storm_data %>%
         dplyr::filter(storm_id == 'Katrina-2005' & date == lubridate::ymd_hm("2005-08-29 12:00"))
+
     library(ggmap)
+
+    fills <- c("red", "orange", "yellow")
 
     get_map("Louisiana", zoom = 6, maptype = "toner-background") %>%
         ggmap(extent = "device") +
@@ -107,5 +119,5 @@ draw_katrina <- function(datadir = system.file("extdata", package="CourseraRdata
         scale_color_manual(name = "Wind speed (kts)",
                            values = c("red", "orange", "yellow")) +
         scale_fill_manual(name = "Wind speed (kts)",
-                          values = c("red", "orange", "yellow"))
+                          values = fills)
 }

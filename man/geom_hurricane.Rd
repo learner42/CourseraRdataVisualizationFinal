@@ -54,3 +54,6 @@ to the paired geom/stat.}
 \description{
 Function to be use in ggplot2 to add a hurricane layer
 }
+\details{
+The essential aes to pass are: x, y, r_ne, r_se, r_nw, r_sw. The wind_speed should be passed to color and fill parameters
+}

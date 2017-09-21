@@ -15,6 +15,7 @@ This package provides a geom_hurricane method to be used in ggplot2 to draw hurr
 library(CourseraRdataVisualizationFinal)
 library(magrittr)
 library(ggplot2)
+library(grid)
 options(width = 120)
 ```
 
@@ -48,6 +49,6 @@ ggplot(polygon, aes(x = lat, y = lon)) +
 ## Example of hurricane illustration with `geom_hurricane`
 
 Draw the katrina observation on the screen:
-```{r, fig.show='hold'}
-# draw_katrina()
+```{r, fig.show='hold', message = FALSE, warning = FALSE}
+draw_katrina()
 ```
